@@ -29,13 +29,12 @@ void q_free(struct list_head *head)
     if (!head) {
         return;
     }
-    while (head->next != head) {
-        head = head->next;
-        list_del(head);
-        q_release_element(list_entry(head, element_t, list));
+    element_t *pos, *safe;
+    list_for_each_entry_safe (pos, safe, head, list) {
+        list_del(&pos->list);
+        q_release_element(pos);
     }
-    list_del(head);
-    q_release_element(list_entry(head, element_t, list));
+    q_release_element(pos);
 }
 
 /* Insert an element at head of queue */
