@@ -97,6 +97,16 @@ element_t *q_remove_head(struct list_head *head, char *sp, size_t bufsize)
 /* Remove an element from tail of queue */
 element_t *q_remove_tail(struct list_head *head, char *sp, size_t bufsize)
 {
+    if (!head || list_empty(head)) {
+        return NULL;
+    }
+    if (sp) {
+        element_t *node = container_of(head->prev, element_t, list);
+        strncpy(sp, node->value, bufsize - 1);
+        sp[bufsize - 1] = '\0';
+        list_del_init(head->prev);
+        return node;
+    }
     return NULL;
 }
 
