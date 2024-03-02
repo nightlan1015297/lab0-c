@@ -87,7 +87,7 @@ element_t *q_remove_head(struct list_head *head, char *sp, size_t bufsize)
     if (sp) {
         element_t *node = container_of(head->next, element_t, list);
         strncpy(sp, node->value, bufsize - 1);
-        sp[bufsize] = '\0';
+        sp[bufsize - 1] = '\0';
         list_del(head->next);
         return node;
     }
