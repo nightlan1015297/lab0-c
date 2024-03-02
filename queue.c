@@ -53,7 +53,6 @@ bool q_insert_head(struct list_head *head, char *s)
 
     node->value = strncpy(val, s, len);
     list_add(&node->list, head);
-
     return true;
 }
 
