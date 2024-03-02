@@ -29,10 +29,9 @@ void q_free(struct list_head *head)
     }
     element_t *pos, *safe;
     list_for_each_entry_safe (pos, safe, head, list) {
-        list_del(&pos->list);
         q_release_element(pos);
     }
-    q_release_element(pos);
+    free(head);
 }
 
 /* Insert an element at head of queue */
