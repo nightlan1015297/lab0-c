@@ -18,7 +18,7 @@ struct list_head *q_new()
     if (!element) {
         return NULL;
     }
-    element->value = "\0";
+    element->value = NULL;
     INIT_LIST_HEAD(&element->list);
     return &element->list;
 }
