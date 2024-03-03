@@ -189,22 +189,20 @@ int q_ascend(struct list_head *head)
     if (!head || list_empty(head)) {
         return 0;
     }
-    struct list_head *pos, *safe;
-    pos = head->prev;
-    char *max = container_of(pos, element_t, list)->value;
-    char *temp;
-    pos = pos->prev;
     int cnt = 1;
-    while (pos != head) {
-        safe = pos->prev;
-        temp = container_of(pos, element_t, list)->value;
-        if (strcmp(temp, max) < 0) {
-            list_del(pos);
+    struct list_head *cur, *tar;
+    cur = head->prev;
+    tar = cur->prev;
+    while (tar != head) {
+        if (strcmp(container_of(cur, element_t, list)->value,
+                   container_of(tar, element_t, list)->value) < 0) {
+            list_del(tar);
+            tar = cur->prev;
         } else {
-            max = temp;
+            cur = tar;
+            tar = cur->prev;
             cnt++;
         }
-        pos = safe;
     }
     return cnt;
 }
