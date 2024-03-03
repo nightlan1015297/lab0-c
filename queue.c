@@ -195,7 +195,7 @@ int q_ascend(struct list_head *head)
     tar = cur->prev;
     while (tar != head) {
         if (strcmp(container_of(cur, element_t, list)->value,
-                   container_of(tar, element_t, list)->value) < 0) {
+                   container_of(tar, element_t, list)->value) <= 0) {
             list_del(tar);
             tar = cur->prev;
         } else {
