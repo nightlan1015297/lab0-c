@@ -272,17 +272,19 @@ int q_merge(struct list_head *head, bool descend)
 
 /* Merge two queues into one sorted queue which is in ascending/descending
  * order */
-void __q_merge_two(struct list_head *head_1,
-                   struct list_head *head_2,
-                   bool descend)
+struct list_head *__q_merge_two(struct list_head *L1,
+                                struct list_head *L2,
+                                bool descend)
 {
-    struct list_head **node;
-    struct list_head *l1 = head_1->next, *l2 = head_2->next;
-    for (node = NULL; l2 != head_2 && l1 != head_1; *node = (*node)->next) {
-        bool cmp = strcmp(list_entry(l1, element_t, list)->value,
-                          list_entry(l2, element_t, list)->value) < 0;
-        node = !(descend ^ cmp) ? &l1 : &l2;
-        list_move_tail(*node, l1);
+    struct list_head *head = NULL, **ptr = &head, **node;
+
+    for (node = NULL; L1 && L2; *node = (*node)->next) {
+        bool cmp = strcmp(list_entry(L1, element_t, list)->value,
+                          list_entry(L2, element_t, list)->value) < 0;
+        node = (descend ^ cmp) ? &L1 : &L2;
+        *ptr = *node;
+        ptr = &(*ptr)->next;
     }
-    list_splice_tail(head_2, head_1);
+    *ptr = (struct list_head *) ((uintptr_t) L1 | (uintptr_t) L2);
+    return head;
 }
