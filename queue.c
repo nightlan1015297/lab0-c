@@ -1,3 +1,4 @@
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -267,4 +268,21 @@ int q_merge(struct list_head *head, bool descend)
 {
     // https://leetcode.com/problems/merge-k-sorted-lists/
     return 0;
+}
+
+/* Merge two queues into one sorted queue which is in ascending/descending
+ * order */
+void __q_merge_two(struct list_head *head_1,
+                   struct list_head *head_2,
+                   bool descend)
+{
+    struct list_head **node;
+    struct list_head *l1 = head_1->next, *l2 = head_2->next;
+    for (node = NULL; l2 != head_2 && l1 != head_1; *node = (*node)->next) {
+        bool cmp = strcmp(list_entry(l1, element_t, list)->value,
+                          list_entry(l2, element_t, list)->value) < 0;
+        node = !(descend ^ cmp) ? &l1 : &l2;
+        list_move_tail(*node, l1);
+    }
+    list_splice_tail(head_2, head_1);
 }
