@@ -277,14 +277,18 @@ struct list_head *__q_merge_two(struct list_head *L1,
                                 bool descend)
 {
     struct list_head *head = NULL, **ptr = &head, **node;
+    struct list_head **prev_node = NULL;
 
     for (node = NULL; L1 && L2; *node = (*node)->next) {
         bool cmp = strcmp(list_entry(L1, element_t, list)->value,
                           list_entry(L2, element_t, list)->value) < 0;
         node = (descend ^ cmp) ? &L1 : &L2;
+        (*node)->prev = *prev_node;
         *ptr = *node;
+        prev_node = node;
         ptr = &(*ptr)->next;
     }
     *ptr = (struct list_head *) ((uintptr_t) L1 | (uintptr_t) L2);
+    (*ptr)->prev = *prev_node;
     return head;
 }
