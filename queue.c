@@ -146,7 +146,34 @@ bool q_delete_mid(struct list_head *head)
 /* Delete all nodes that have duplicate string */
 bool q_delete_dup(struct list_head *head)
 {
-    // https://leetcode.com/problems/remove-duplicates-from-sorted-list-ii/
+    if (!head) {
+        return false;
+    }
+    if (list_empty(head) || list_is_singular(head)) {
+        return true;
+    }
+    struct list_head *ptr = head->next;
+    bool need_del = false;
+    while (ptr->next != head && ptr != head) {
+        element_t *cur = container_of(ptr, element_t, list);
+        element_t *next = container_of(ptr->next, element_t, list);
+        bool cmp = strcmp(cur->value, next->value) == 0;
+        if (cmp) {
+            list_del(&cur->list);
+            q_release_element(cur);
+            need_del = cmp;
+        } else if (need_del) {
+            list_del(&cur->list);
+            q_release_element(cur);
+            need_del = cmp;
+        }
+        ptr = &next->list;
+    }
+    if (need_del) {
+        element_t *cur = container_of(ptr, element_t, list);
+        list_del(&cur->list);
+        q_release_element(cur);
+    }
     return true;
 }
 
@@ -206,8 +233,8 @@ void q_reverseK(struct list_head *head, int k)
         list_splice_tail(&tmp, head);
     }
 }
-/* Merge all the queues into one sorted queue, which is in ascending/descending
- * order */
+/* Merge all the queues into one sorted queue, which is in
+ * ascending/descending order */
 int q_merge(struct list_head *head, bool descend)
 {
     // https://leetcode.com/problems/merge-k-sorted-lists/
@@ -298,8 +325,8 @@ int q_ascend(struct list_head *head)
     return cnt;
 }
 
-/* Remove every node which has a node with a strictly greater value anywhere to
- * the right side of it */
+/* Remove every node which has a node with a strictly greater value anywhere
+ * to the right side of it */
 int q_descend(struct list_head *head)
 {
     // https://leetcode.com/problems/remove-nodes-from-linked-list/
