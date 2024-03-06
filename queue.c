@@ -188,6 +188,9 @@ void q_swap(struct list_head *head)
     while (cur->next != head || cur != head) {
         list_move_tail(cur->next, cur);
         cur = cur->next;
+        if (cur->next != head || cur != head) {
+            break;
+        }
     }
 }
 
