@@ -306,8 +306,9 @@ int q_ascend(struct list_head *head)
     tar = cur->prev;
     while (tar != head) {
         if (strcmp(container_of(cur, element_t, list)->value,
-                   container_of(tar, element_t, list)->value) <= 0) {
+                   container_of(tar, element_t, list)->value) < 0) {
             list_del(tar);
+            q_release_element(container_of(tar, element_t, list));
             tar = cur->prev;
         } else {
             cur = tar;
@@ -332,8 +333,9 @@ int q_descend(struct list_head *head)
     tar = cur->prev;
     while (tar != head) {
         if (strcmp(container_of(cur, element_t, list)->value,
-                   container_of(tar, element_t, list)->value) >= 0) {
+                   container_of(tar, element_t, list)->value) > 0) {
             list_del(tar);
+            q_release_element(container_of(tar, element_t, list));
             tar = cur->prev;
         } else {
             cur = tar;
