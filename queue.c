@@ -233,13 +233,6 @@ void q_reverseK(struct list_head *head, int k)
         list_splice_tail(&tmp, head);
     }
 }
-/* Merge all the queues into one sorted queue, which is in
- * ascending/descending order */
-int q_merge(struct list_head *head, bool descend)
-{
-    // https://leetcode.com/problems/merge-k-sorted-lists/
-    return 0;
-}
 
 /* Merge two queues into one sorted queue which is in ascending/descending
  * order */
@@ -247,6 +240,9 @@ struct list_head *__q_merge_two(struct list_head *L1,
                                 struct list_head *L2,
                                 bool descend)
 {
+    if (L1 == L2) {
+        return L1;
+    }
     struct list_head *head = NULL, **ptr = &head, **node;
 
     for (node = NULL; L1 && L2; *node = (*node)->next) {
@@ -349,4 +345,12 @@ int q_descend(struct list_head *head)
         }
     }
     return cnt;
+}
+
+
+/* Merge all the queues into one sorted queue, which is in
+ * ascending/descending order */
+int q_merge(struct list_head *head, bool descend)
+{
+    return 0;
 }
