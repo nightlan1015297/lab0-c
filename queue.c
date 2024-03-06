@@ -212,22 +212,21 @@ void q_reverseK(struct list_head *head, int k)
     if (!head || list_empty(head) || k <= 1) {
         return;
     }
-
-    LIST_HEAD(tmp);
+    LIST_HEAD(dummy);
+    struct list_head *cur, *safe;
     int cnt = 1;
-    struct list_head *node, *safe;
-    list_for_each_safe (node, safe, head) {
-        list_del(node);
-        list_add(node, &tmp);
+    list_for_each_safe (cur, safe, head) {
+        list_del(cur);
+        list_add(cur, &dummy);
         if (cnt == k) {
-            list_splice_tail(&tmp, node);
-            cnt = 0;
+            list_splice_tail(&dummy, safe);
+            INIT_LIST_HEAD(&dummy);
         }
         cnt++;
     }
-    if (cnt != 1) {
-        q_reverse(&tmp);
-        list_splice_tail(&tmp, head);
+    if (!list_empty(&dummy)) {
+        q_reverse(&dummy);
+        list_splice_tail(&dummy, head);
     }
 }
 
