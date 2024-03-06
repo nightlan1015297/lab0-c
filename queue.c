@@ -221,6 +221,7 @@ void q_reverseK(struct list_head *head, int k)
         if (cnt == k) {
             list_splice_tail(&dummy, safe);
             INIT_LIST_HEAD(&dummy);
+            cnt = 0;
         }
         cnt++;
     }
