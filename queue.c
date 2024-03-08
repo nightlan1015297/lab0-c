@@ -38,19 +38,16 @@ void q_free(struct list_head *head)
 /* Insert an element at head of queue */
 bool q_insert_head(struct list_head *head, char *s)
 {
-    if (!head) {
+    if (!head)
         return false;
-    }
     element_t *node = malloc(sizeof(element_t));
-    if (!node) {
+    if (!node)
         return false;
-    }
     node->value = strdup(s);
     if (!node->value) {
         free(node);
         return false;
     }
-
     list_add(&node->list, head);
     return true;
 }
@@ -58,20 +55,16 @@ bool q_insert_head(struct list_head *head, char *s)
 /* Insert an element at tail of queue */
 bool q_insert_tail(struct list_head *head, char *s)
 {
-    if (!head) {
+    if (!head)
         return false;
-    }
     element_t *node = malloc(sizeof(element_t));
-    if (!node) {
+    if (!node)
         return false;
-    }
     node->value = strdup(s);
-
     if (!node->value) {
         free(node);
         return false;
     }
-
     list_add_tail(&node->list, head);
     return true;
 }
@@ -82,11 +75,11 @@ element_t *q_remove_head(struct list_head *head, char *sp, size_t bufsize)
     if (!head || list_empty(head)) {
         return NULL;
     }
-    element_t *node = container_of(head->next, element_t, list);
-    list_del_init(head->next);
+    element_t *node = list_first_entry(head, element_t, list);
+    list_del(&node->list);
 
-    if (sp) {
-        strncpy(sp, node->value, bufsize - 1);
+    if (sp && node->value) {
+        strncpy(sp, node->value, bufsize);
         sp[bufsize - 1] = '\0';
     }
     return node;
@@ -98,11 +91,11 @@ element_t *q_remove_tail(struct list_head *head, char *sp, size_t bufsize)
     if (!head || list_empty(head)) {
         return NULL;
     }
-    element_t *node = container_of(head->prev, element_t, list);
-    list_del_init(head->prev);
+    element_t *node = list_last_entry(head, element_t, list);
+    list_del(&node->list);
 
-    if (sp) {
-        strncpy(sp, node->value, bufsize - 1);
+    if (sp && node->value) {
+        strncpy(sp, node->value, bufsize);
         sp[bufsize - 1] = '\0';
     }
     return node;
