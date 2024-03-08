@@ -237,9 +237,9 @@ struct list_head *__q_merge_two(struct list_head *L1,
                                 struct list_head *L2,
                                 bool descend)
 {
-    if (L1 == L2) {
+    if (L1 == L2)
         return L1;
-    }
+
     struct list_head *head = NULL, **ptr = &head, **node;
 
     for (node = NULL; L1 && L2; *node = (*node)->next) {
@@ -351,5 +351,37 @@ int q_descend(struct list_head *head)
  * ascending/descending order */
 int q_merge(struct list_head *head, bool descend)
 {
-    return 0;
+    if (!head || list_empty(head)) {
+        return 0;
+    }
+    if (list_is_singular(head)) {
+        return q_size(list_entry(head->next, queue_contex_t, chain)->q);
+    }
+    int size = list_entry(head, queue_contex_t, chain)->size;
+    struct list_head *cur = head->next->next;
+    struct list_head *first_q =
+        list_entry(head->next, queue_contex_t, chain)->q;
+    first_q->prev->next = NULL;
+    for (int i = 1; i < size; i++) {
+        struct list_head *cur_q = list_entry(cur, queue_contex_t, chain)->q;
+        if (!cur_q)
+            continue;
+        cur_q->prev->next = NULL;
+        first_q->next = __q_merge_two(first_q->next, cur_q->next, descend);
+        INIT_LIST_HEAD(cur_q);
+        cur = cur->next;
+    }
+
+    int cnt = 1;
+    struct list_head *curr = first_q->next;
+    first_q->next->prev = first_q;
+    while (curr->next) {
+        // Update prev
+        curr->next->prev = curr;
+        curr = curr->next;
+        cnt++;
+    }
+    curr->next = first_q;
+    first_q->prev = curr;
+    return cnt;
 }
